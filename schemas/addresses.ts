@@ -2,8 +2,6 @@ import {
   pgTable,
   varchar,
   timestamp,
-  integer,
-  date,
   index,
   boolean,
 } from "drizzle-orm/pg-core";

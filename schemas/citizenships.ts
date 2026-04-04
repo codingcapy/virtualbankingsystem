@@ -1,4 +1,10 @@
-import { pgTable, varchar, timestamp, index } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  varchar,
+  timestamp,
+  index,
+  unique,
+} from "drizzle-orm/pg-core";
 import type { InferSelectModel } from "drizzle-orm";
 import { profiles } from "./profiles";
 
@@ -15,6 +21,10 @@ export const citizenships = pgTable(
   },
   (table) => ({
     profileIdx: index("citizenships_profile_id_idx").on(table.profileId),
+    uniqueCitizenship: unique("citizenships_profile_id_country_unique").on(
+      table.profileId,
+      table.country,
+    ),
   }),
 );
 

@@ -24,6 +24,7 @@ export const profiles = pgTable(
   (table) => ({
     emailIdx: index("profiles_email_idx").on(table.email),
     createdAtIdx: index("profiles_created_at_idx").on(table.createdAt),
+    phoneIdx: index("profiles_phone_number_idx").on(table.phoneNumber),
   }),
 );
 

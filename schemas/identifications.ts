@@ -21,6 +21,7 @@ export const identifications = pgTable(
     }).notNull(),
     number: varchar("number", { length: 64 }).notNull(),
     country: varchar("country", { length: 2 }).notNull(),
+    issueDate: date("issue_date").notNull(),
     expiryDate: date("expiry_date").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -30,6 +31,10 @@ export const identifications = pgTable(
     uniqueIdentification: unique(
       "identifications_type_number_country_unique",
     ).on(table.type, table.number, table.country),
+    profileTypeIdx: index("identifications_profile_id_type_idx").on(
+      table.profileId,
+      table.type,
+    ),
   }),
 );
 

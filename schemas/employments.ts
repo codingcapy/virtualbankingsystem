@@ -2,10 +2,10 @@ import {
   pgTable,
   varchar,
   timestamp,
-  integer,
   date,
   index,
   boolean,
+  bigint,
 } from "drizzle-orm/pg-core";
 import type { InferSelectModel } from "drizzle-orm";
 import { profiles } from "./profiles";
@@ -19,7 +19,7 @@ export const employments = pgTable(
       .references(() => profiles.profileId),
     employerName: varchar("employer_name", { length: 64 }).notNull(),
     position: varchar("position", { length: 64 }).notNull(),
-    annualIncome: integer("annual_income").notNull(), // cents
+    annualIncome: bigint("annual_income", { mode: "number" }).notNull(), // cents
     startDate: date("start_date"),
     endDate: date("end_date"),
     isCurrent: boolean("is_current").default(true).notNull(),
