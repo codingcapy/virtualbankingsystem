@@ -1,10 +1,18 @@
-import { pgTable, varchar, timestamp, date, index } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  varchar,
+  timestamp,
+  date,
+  index,
+  serial,
+} from "drizzle-orm/pg-core";
 import type { InferSelectModel } from "drizzle-orm";
 
 export const profiles = pgTable(
   "profiles",
   {
     profileId: varchar("profile_id").primaryKey(),
+    profileNumber: serial().notNull(),
     firstName: varchar("first_name", { length: 64 }).notNull(),
     middleName: varchar("middle_name", { length: 64 }),
     lastName: varchar("last_name", { length: 64 }).notNull(),

@@ -16,6 +16,7 @@ export const profilesRouter = new Hono()
       "json",
       createInsertSchema(profilesTable).omit({
         profileId: true,
+        profileNumber: true,
         role: true,
         status: true,
         createdAt: true,
