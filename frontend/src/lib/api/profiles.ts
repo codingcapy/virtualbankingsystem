@@ -1,4 +1,5 @@
-import { client, type ArgumentTypes } from "./client";
+import type { Profile } from "@server/schemas/profiles";
+import { client, type ArgumentTypes, type ExtractData } from "./client";
 import {
   queryOptions,
   useMutation,
@@ -8,6 +9,20 @@ import {
 type CreateProfileArgs = ArgumentTypes<
   typeof client.api.v0.profiles.$post
 >[0]["json"];
+
+type SerializeProfile = ExtractData<
+  Awaited<ReturnType<typeof client.api.v0.profiles.$get>>
+>["profiles"][number];
+
+export function mapSerializedProfileToSchema(
+  serialized: SerializeProfile,
+): Profile {
+  return {
+    ...serialized,
+    createdAt: new Date(serialized.createdAt),
+    updatedAt: new Date(serialized.updatedAt),
+  };
+}
 
 async function createProfile(args: CreateProfileArgs) {
   const res = await client.api.v0.profiles.$post({ json: args });
@@ -50,3 +65,24 @@ export const useCreateProfileMutation = (
     },
   });
 };
+
+async function getProfiles(page: number) {
+  const res = await client.api.v0.profiles.$get({
+    query: { page: page.toString() },
+  });
+  if (!res.ok) {
+    throw new Error("Error getting profiles");
+  }
+  const { profiles, page: currentPage, totalPages } = await res.json();
+  return {
+    profiles: profiles.map(mapSerializedProfileToSchema),
+    page: currentPage,
+    totalPages,
+  };
+}
+
+export const getProfilesQueryOptions = (page: number) =>
+  queryOptions({
+    queryKey: ["profiles", page],
+    queryFn: () => getProfiles(page),
+  });

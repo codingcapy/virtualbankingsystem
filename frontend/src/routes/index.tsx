@@ -1,12 +1,24 @@
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { LeftNav } from "../components/LeftNav";
-import { TopNav } from "../components/TopNav";
+import z from "zod";
+import { getProfilesQueryOptions } from "../lib/api/profiles";
 
 export const Route = createFileRoute("/")({
+  validateSearch: z.object({
+    page: z.coerce.number().int().min(1).default(1),
+  }),
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const navigate = Route.useNavigate();
+  const { page } = Route.useSearch();
+  const {
+    data: data,
+    isLoading: profilesLoading,
+    error: profilesError,
+  } = useQuery(getProfilesQueryOptions(page));
+
   return (
     <div className="flex flex-col">
       <div className="pt-25 pl-62.5 mx-auto">
@@ -29,6 +41,15 @@ function RouteComponent() {
           <div className="w-[225px] p-2 border-r border-r-[#a0a0a0]">Email</div>
           <div className="w-[100px] p-2">Phone #</div>
         </div>
+        {profilesLoading ? (
+          <div>Loading profiles...</div>
+        ) : profilesError ? (
+          <div>Error loading profiles</div>
+        ) : data ? (
+          data.profiles.map(() => <div></div>)
+        ) : (
+          <div></div>
+        )}
         <div className="border border-[#a0a0a0] h-[500px] overflow-y-auto ">
           <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
             <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
