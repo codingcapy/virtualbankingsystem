@@ -86,3 +86,21 @@ export const getProfilesQueryOptions = (page: number) =>
     queryKey: ["profiles", page],
     queryFn: () => getProfiles(page),
   });
+
+async function getProfileByNumber(profileNumber: number) {
+  const profileNumberString = profileNumber.toString();
+  const res = await client.api.v0.profiles[":profileNumber"].$get({
+    param: { profileNumber: profileNumberString },
+  });
+  if (!res.ok) {
+    throw new Error("Error getting profile by number");
+  }
+  const { profile } = await res.json();
+  return mapSerializedProfileToSchema(profile as SerializeProfile);
+}
+
+export const getprofileByNumberQueryOptions = (profileNumber: number) =>
+  queryOptions({
+    queryKey: ["profile", profileNumber],
+    queryFn: () => getProfileByNumber(profileNumber),
+  });

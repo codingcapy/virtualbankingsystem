@@ -7,7 +7,7 @@ import { mightFail } from "might-fail";
 import { db } from "../db";
 import { randomUUIDv7 } from "bun";
 import { HTTPException } from "hono/http-exception";
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export const profilesRouter = new Hono()
   .post(
@@ -68,4 +68,23 @@ export const profilesRouter = new Hono()
     const total = Number(countResult?.[0]?.count ?? 0);
     const totalPages = Math.ceil(total / PAGE_SIZE);
     return c.json({ profiles, page, pageSize: PAGE_SIZE, total, totalPages });
+  })
+  .get("/:profileNumber", async (c) => {
+    const { profileNumber } = c.req.param();
+    const { result: profilesQueryResult, error: profilesQueryError } =
+      await mightFail(
+        db
+          .select()
+          .from(profilesTable)
+          .where(eq(profilesTable.profileNumber, Number(profileNumber))),
+      );
+    if (profilesQueryError) {
+      throw new HTTPException(500, {
+        message: "Error occurred when fetching profile",
+        cause: profilesQueryError,
+      });
+    }
+    return c.json({
+      profile: profilesQueryResult[0],
+    });
   });
