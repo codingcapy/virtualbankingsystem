@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import z from "zod";
-import { getprofileByIdQueryOptions } from "../../lib/api/profiles";
+import { getprofileByNumberQueryOptions } from "../../lib/api/profiles";
 
 export const Route = createFileRoute("/profile/$profileNumber")({
   beforeLoad: async ({ context, params }) => {
@@ -8,7 +8,7 @@ export const Route = createFileRoute("/profile/$profileNumber")({
     try {
       const profileNumber = z.coerce.number().int().parse(postIdParam);
       const postQuery = await context.queryClient.fetchQuery({
-        ...getprofileByIdQueryOptions(profileNumber),
+        ...getprofileByNumberQueryOptions(profileNumber),
         retry: (failureCount, error) => {
           if (error instanceof Error && error.message.includes("404")) {
             return false;
