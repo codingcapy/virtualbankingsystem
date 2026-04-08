@@ -41,289 +41,40 @@ function RouteComponent() {
           <div className="w-[225px] p-2 border-r border-r-[#a0a0a0]">Email</div>
           <div className="w-[100px] p-2">Phone #</div>
         </div>
-        {profilesLoading ? (
-          <div>Loading profiles...</div>
-        ) : profilesError ? (
-          <div>Error loading profiles</div>
-        ) : data ? (
-          data.profiles.map(() => <div></div>)
-        ) : (
-          <div></div>
-        )}
         <div className="border border-[#a0a0a0] h-[500px] overflow-y-auto ">
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
-          <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
-            <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
-              1234567890
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              SuperlongfirstnameSuperlongfirstname
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlongmiddlename
-            </div>
-            <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              Superlonglastname
-            </div>
-            <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
-              01-01-1990
-            </div>
-            <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
-              superlongemail@gmail.com
-            </div>
-            <div className="w-[100px] p-2 overflow-x-hidden">1234567890</div>
-          </div>
+          {profilesLoading ? (
+            <div>Loading profiles...</div>
+          ) : profilesError ? (
+            <div>Error loading profiles</div>
+          ) : data ? (
+            data.profiles.map((p) => (
+              <div className="flex border-b border-[#a0a0a0] cursor-pointer hover:bg-blue-300 transition-all ease-in-out duration-300">
+                <div className="w-[100px] p-2 border-r border-r-[#a0a0a0]">
+                  {p.profileNumber}
+                </div>
+                <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
+                  {p.firstName}
+                </div>
+                <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
+                  {p.middleName}
+                </div>
+                <div className="w-[200px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
+                  {p.lastName}
+                </div>
+                <div className="w-[125px] p-2 border-r border-r-[#a0a0a0]">
+                  {p.dateOfBirth}
+                </div>
+                <div className="w-[225px] p-2 border-r border-r-[#a0a0a0] overflow-x-hidden">
+                  {p.email}
+                </div>
+                <div className="w-[100px] p-2 overflow-x-hidden">
+                  {p.phoneNumber}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
     </div>
