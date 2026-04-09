@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-runtime-D-oznMWL.js";var t=e();function n(){return(0,t.jsx)(`div`,{children:`Hello "/profile/$profileNumber"!`})}export{n as component};

@@ -19,10 +19,10 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootComponent() {
   return (
     <React.Fragment>
-      <div className="md:hidden pt-25 text-center px-2">
+      <div className="lg:hidden pt-25 text-center px-2 text-gray-800">
         This is a banking system that can only be used on desktop viewport
       </div>
-      <div className="hidden md:block">
+      <div className="hidden lg:block text-gray-800">
         <LeftNav />
         <TopNav />
         <Outlet />
