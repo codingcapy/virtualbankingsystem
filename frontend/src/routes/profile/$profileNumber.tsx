@@ -32,7 +32,7 @@ function RouteComponent() {
   const profile = Route.useRouteContext();
 
   return (
-    <div className="pl-[225px] pt-[70px]">
+    <div className="pl-[250px] pt-[70px]">
       <div className="text-4xl font-bold text-gray-500">
         {profile.lastName}, {profile.firstName}
       </div>

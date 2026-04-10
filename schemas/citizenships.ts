@@ -12,17 +12,19 @@ export const citizenships = pgTable(
   "citizenships",
   {
     citizenshipId: varchar("citizenship_id").primaryKey(),
-    profileId: varchar("profile_id")
+    profileNumber: varchar("profile_number")
       .notNull()
-      .references(() => profiles.profileId),
+      .references(() => profiles.profileNumber),
     country: varchar("country", { length: 2 }).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => ({
-    profileIdx: index("citizenships_profile_id_idx").on(table.profileId),
-    uniqueCitizenship: unique("citizenships_profile_id_country_unique").on(
-      table.profileId,
+    profileIdx: index("citizenships_profile_number_idx").on(
+      table.profileNumber,
+    ),
+    uniqueCitizenship: unique("citizenships_profile_number_country_unique").on(
+      table.profileNumber,
       table.country,
     ),
   }),
