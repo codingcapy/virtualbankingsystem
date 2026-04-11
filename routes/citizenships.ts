@@ -12,10 +12,8 @@ const createCitizenshipSchema = z.object({
   profileNumber: z.string(),
 });
 
-export const citizenshipsRouter = new Hono().post(
-  "/",
-  zValidator("json", createCitizenshipSchema),
-  async (c) => {
+export const citizenshipsRouter = new Hono()
+  .post("/", zValidator("json", createCitizenshipSchema), async (c) => {
     const insertValues = c.req.valid("json");
     const { error: citizenshipInsertError, result: citizenshipInsertResult } =
       await mightFail(
@@ -32,6 +30,16 @@ export const citizenshipsRouter = new Hono().post(
         cause: citizenshipInsertError,
       });
     }
-    return c.json({ citizenshipResult: citizenshipInsertResult[0] }, 200);
-  },
-);
+    return c.json({ citizenship: citizenshipInsertResult[0] }, 200);
+  })
+  .get("/", async (c) => {
+    const { result: citizenshipsQueryResult, error: citizenshipsQueryError } =
+      await mightFail(db.select().from(citizenshipsTable));
+    if (citizenshipsQueryError)
+      throw new HTTPException(500, {
+        message: "Error fetching citizenships",
+        cause: citizenshipsQueryError,
+      });
+    return c.json({ citizenships: citizenshipsQueryResult });
+  })
+  .get("/:profileNumber", async (c) => {});

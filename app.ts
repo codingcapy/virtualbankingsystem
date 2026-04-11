@@ -4,6 +4,7 @@ import { serveStatic } from "hono/bun";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { profilesRouter } from "./routes/profiles";
+import { citizenshipsRouter } from "./routes/citizenships";
 
 const app = new Hono();
 
@@ -12,7 +13,10 @@ app.use("*", cors());
 
 const PORT = parseInt(process.env.PORT!) || 3333;
 
-const apiRoutes = app.basePath("/api/v0").route("/profiles", profilesRouter);
+const apiRoutes = app
+  .basePath("/api/v0")
+  .route("/profiles", profilesRouter)
+  .route("/citizenships", citizenshipsRouter);
 
 export type ApiRoutes = typeof apiRoutes;
 export default app;
