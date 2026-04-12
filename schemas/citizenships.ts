@@ -4,6 +4,7 @@ import {
   timestamp,
   index,
   unique,
+  integer,
 } from "drizzle-orm/pg-core";
 import type { InferSelectModel } from "drizzle-orm";
 import { profiles } from "./profiles";
@@ -12,7 +13,7 @@ export const citizenships = pgTable(
   "citizenships",
   {
     citizenshipId: varchar("citizenship_id").primaryKey(),
-    profileNumber: varchar("profile_number")
+    profileNumber: integer("profile_number")
       .notNull()
       .references(() => profiles.profileNumber),
     country: varchar("country", { length: 2 }).notNull(),

@@ -6,10 +6,12 @@ import { db } from "../db";
 import { citizenships as citizenshipsTable } from "../schemas/citizenships";
 import { randomUUIDv7 } from "bun";
 import { HTTPException } from "hono/http-exception";
+import { assertIsParsableInt } from "../utils";
+import { eq } from "drizzle-orm";
 
 const createCitizenshipSchema = z.object({
   country: z.string(),
-  profileNumber: z.string(),
+  profileNumber: z.number(),
 });
 
 export const citizenshipsRouter = new Hono()
@@ -42,4 +44,20 @@ export const citizenshipsRouter = new Hono()
       });
     return c.json({ citizenships: citizenshipsQueryResult });
   })
-  .get("/:profileNumber", async (c) => {});
+  .get("/:profileNumber", async (c) => {
+    const { profileNumber: profileNumberString } = c.req.param();
+    const profileNumber = assertIsParsableInt(profileNumberString);
+    const { result: citizenshipsQueryResult, error: citizenshipsQueryError } =
+      await mightFail(
+        db
+          .select()
+          .from(citizenshipsTable)
+          .where(eq(citizenshipsTable.profileNumber, profileNumber)),
+      );
+    if (citizenshipsQueryError)
+      throw new HTTPException(500, {
+        message: "Error fetching citizenships",
+        cause: citizenshipsQueryError,
+      });
+    return c.json({ citizenships: citizenshipsQueryResult });
+  });

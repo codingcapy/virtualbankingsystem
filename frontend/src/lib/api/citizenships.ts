@@ -1,6 +1,10 @@
 import type { Citizenship } from "@server/schemas/citizenships";
 import { type ArgumentTypes, client, type ExtractData } from "./client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 type CreateCitizenshipArgs = ArgumentTypes<
   typeof client.api.v0.citizenships.$post
@@ -61,3 +65,22 @@ export const useCreateCitizenshipMutation = (
     },
   });
 };
+
+async function getCitizenshipsByProfileNumber(profileNumber: number) {
+  const res = await client.api.v0.citizenships[":profileNumber"].$get({
+    param: { profileNumber: profileNumber.toString() },
+  });
+  if (!res.ok) {
+    throw new Error("Error getting plan by id");
+  }
+  const { citizenships } = await res.json();
+  return citizenships.map(mapSerializedCitizenshipToSchema);
+}
+
+export const getCitizenshipsByprofileNumberQueryOptions = (
+  profileNumber: number,
+) =>
+  queryOptions({
+    queryKey: ["citizenships", profileNumber],
+    queryFn: () => getCitizenshipsByProfileNumber(profileNumber),
+  });

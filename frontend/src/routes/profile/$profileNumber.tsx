@@ -57,7 +57,8 @@ function RouteComponent() {
         <div className="w-[150px] mr-[25px] overflow-x-auto">
           {profile.email}
         </div>
-        <div className="w-[100px] overflow-x-auto">{profile.phoneNumber}</div>
+        <div className="w-[125px] overflow-x-auto">{profile.phoneNumber}</div>
+        <div className="border w-[125px] h-[50px] overflow-auto border rounded"></div>
       </div>
       <div className="flex mt-2 font-semibold">
         <div className="w-[500px] mr-5 overflow-x-auto">Address</div>
