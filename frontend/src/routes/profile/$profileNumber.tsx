@@ -1,6 +1,13 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import z from "zod";
 import { getprofileByNumberQueryOptions } from "../../lib/api/profiles";
+import {
+  getCitizenshipsByprofileNumberQueryOptions,
+  useCreateCitizenshipMutation,
+} from "../../lib/api/citizenships";
+import { useQuery } from "@tanstack/react-query";
+import type React from "react";
+import { countryMap } from "../../lib/utils";
 
 export const Route = createFileRoute("/profile/$profileNumber")({
   beforeLoad: async ({ context, params }) => {
@@ -30,6 +37,28 @@ export const Route = createFileRoute("/profile/$profileNumber")({
 
 function RouteComponent() {
   const profile = Route.useRouteContext();
+  const {
+    data: citizenships,
+    isLoading: citizenshipsLoading,
+    error: citizenshipsError,
+  } = useQuery(
+    getCitizenshipsByprofileNumberQueryOptions(profile.profileNumber),
+  );
+  const {
+    mutate: createCitizenship,
+    isPending: createCitizenshipPending,
+    error: createCitizenshipError,
+  } = useCreateCitizenshipMutation();
+
+  function handleSubmitCreateCitizenship(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (createCitizenshipPending) return;
+    const country = (e.target as HTMLFormElement).country.value;
+    createCitizenship({
+      profileNumber: profile.profileNumber,
+      country: country,
+    });
+  }
 
   return (
     <div className="pl-[250px] pt-[70px]">
@@ -58,7 +87,27 @@ function RouteComponent() {
           {profile.email}
         </div>
         <div className="w-[125px] overflow-x-auto">{profile.phoneNumber}</div>
-        <div className="border w-[125px] h-[50px] overflow-auto border rounded"></div>
+        <div className="border w-[125px] h-[50px] overflow-auto border rounded">
+          {citizenshipsLoading ? (
+            <div>Loading...</div>
+          ) : citizenshipsError ? (
+            <div>Error</div>
+          ) : citizenships ? (
+            citizenships.length > 0 ? (
+              citizenships.map((c) => (
+                <div key={c.country}>{countryMap[c.country] ?? c.country}</div>
+              ))
+            ) : (
+              <div>
+                <div className="p-1 cursor-pointer hover:bg-[#d0d0d0] transition-all ease-in-out duration-300">
+                  + add
+                </div>
+              </div>
+            )
+          ) : (
+            <div></div>
+          )}
+        </div>
       </div>
       <div className="flex mt-2 font-semibold">
         <div className="w-[500px] mr-5 overflow-x-auto">Address</div>

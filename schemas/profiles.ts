@@ -12,7 +12,7 @@ export const profiles = pgTable(
   "profiles",
   {
     profileId: varchar("profile_id").primaryKey(),
-    profileNumber: serial().notNull(),
+    profileNumber: serial().notNull().unique(),
     firstName: varchar("first_name", { length: 64 }).notNull(),
     middleName: varchar("middle_name", { length: 64 }),
     lastName: varchar("last_name", { length: 64 }).notNull(),
