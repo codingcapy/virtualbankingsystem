@@ -7,7 +7,8 @@ import {
 } from "../../lib/api/citizenships";
 import { useQuery } from "@tanstack/react-query";
 import type React from "react";
-import { countryMap } from "../../lib/utils";
+import { countries, countryMap } from "../../lib/utils";
+import { useEffect, useRef, useState } from "react";
 
 export const Route = createFileRoute("/profile/$profileNumber")({
   beforeLoad: async ({ context, params }) => {
@@ -49,16 +50,30 @@ function RouteComponent() {
     isPending: createCitizenshipPending,
     error: createCitizenshipError,
   } = useCreateCitizenshipMutation();
+  const [showCountries, setShowCountries] = useState(false);
+  const countriesRef = useRef<HTMLDivElement | null>(null);
 
-  function handleSubmitCreateCitizenship(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function handleSubmitCreateCitizenship(selected: string) {
     if (createCitizenshipPending) return;
-    const country = (e.target as HTMLFormElement).country.value;
     createCitizenship({
       profileNumber: profile.profileNumber,
-      country: country,
+      country: selected,
     });
   }
+
+  function handleClickOutside(event: MouseEvent) {
+    if (
+      countriesRef.current &&
+      !countriesRef.current.contains(event.target as Node)
+    ) {
+      setShowCountries(false);
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   return (
     <div className="pl-[250px] pt-[70px]">
@@ -72,7 +87,7 @@ function RouteComponent() {
         <div className="w-[125px] overflow-x-auto">Last name</div>
         <div className="w-[125px] overflow-x-auto">Date of birth</div>
         <div className="w-[150px] mr-[25px] overflow-x-auto">Email</div>
-        <div className="w-[125px] overflow-x-auto">Phone #</div>
+        <div className="w-[100px] overflow-x-auto">Phone #</div>
         <div className="w-[125px] overflow-x-auto">Citizenship</div>
       </div>
       <div className="flex mt-1">
@@ -86,22 +101,61 @@ function RouteComponent() {
         <div className="w-[150px] mr-[25px] overflow-x-auto">
           {profile.email}
         </div>
-        <div className="w-[125px] overflow-x-auto">{profile.phoneNumber}</div>
-        <div className="border w-[125px] h-[50px] overflow-auto border rounded">
+        <div className="w-[100px] overflow-x-auto">{profile.phoneNumber}</div>
+        <div className="border w-[150px] h-[70px] overflow-auto border rounded">
           {citizenshipsLoading ? (
             <div>Loading...</div>
           ) : citizenshipsError ? (
             <div>Error</div>
           ) : citizenships ? (
             citizenships.length > 0 ? (
-              citizenships.map((c) => (
-                <div key={c.country}>{countryMap[c.country] ?? c.country}</div>
-              ))
-            ) : (
               <div>
-                <div className="p-1 cursor-pointer hover:bg-[#d0d0d0] transition-all ease-in-out duration-300">
+                {citizenships.map((c) => (
+                  <div key={c.country}>
+                    {countryMap[c.country] ?? c.country}
+                  </div>
+                ))}
+                <div
+                  ref={countriesRef}
+                  onClick={() => setShowCountries(true)}
+                  className="cursor-pointer hover:bg-[#d0d0d0] transition-all ease-in-out duration-300"
+                >
                   + add
                 </div>
+                {showCountries && (
+                  <div className="absolute top-[180px] bg-white border rounded h-[300px] w-[125px] overflow-y-auto">
+                    {countries.map((c) => (
+                      <div
+                        onClick={() => handleSubmitCreateCitizenship(c.value)}
+                        className="cursor-pointer p-1 hover:bg-[#d0d0d0] transition-all ease-in-out duration-300"
+                      >
+                        {c.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div>
+                <div
+                  ref={countriesRef}
+                  onClick={() => setShowCountries(true)}
+                  className="p-1 cursor-pointer hover:bg-[#d0d0d0] transition-all ease-in-out duration-300"
+                >
+                  + add
+                </div>
+                {showCountries && (
+                  <div className="absolute top-[180px] bg-white border rounded h-[300px] w-[125px] overflow-y-auto">
+                    {countries.map((c) => (
+                      <div
+                        onClick={() => handleSubmitCreateCitizenship(c.value)}
+                        className="cursor-pointer p-1 hover:bg-[#d0d0d0] transition-all ease-in-out duration-300"
+                      >
+                        {c.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )
           ) : (
