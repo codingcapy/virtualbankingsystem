@@ -4,6 +4,7 @@ import {
   timestamp,
   index,
   boolean,
+  integer,
 } from "drizzle-orm/pg-core";
 import type { InferSelectModel } from "drizzle-orm";
 import { profiles } from "./profiles";
@@ -12,9 +13,9 @@ export const addresses = pgTable(
   "addresses",
   {
     addressId: varchar("address_id").primaryKey(),
-    profileId: varchar("profile_id")
+    profileNumber: integer("profile_number")
       .notNull()
-      .references(() => profiles.profileId),
+      .references(() => profiles.profileNumber),
     type: varchar("type", {
       enum: ["home", "mailing", "billing", "other"],
     }).notNull(),
@@ -29,7 +30,7 @@ export const addresses = pgTable(
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => ({
-    profileIdx: index("addresses_profile_id_idx").on(table.profileId),
+    profileIdx: index("addresses_profile_id_idx").on(table.profileNumber),
   }),
 );
 

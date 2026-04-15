@@ -102,7 +102,7 @@ function RouteComponent() {
           {profile.email}
         </div>
         <div className="w-[100px] overflow-x-auto">{profile.phoneNumber}</div>
-        <div className="border w-[150px] h-[70px] overflow-auto border rounded">
+        <div className="border w-[150px] h-[50px] overflow-auto border rounded">
           {citizenshipsLoading ? (
             <div>Loading...</div>
           ) : citizenshipsError ? (
