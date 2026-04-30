@@ -34,16 +34,6 @@ export const citizenshipsRouter = new Hono()
     }
     return c.json({ citizenship: citizenshipInsertResult[0] }, 200);
   })
-  .get("/", async (c) => {
-    const { result: citizenshipsQueryResult, error: citizenshipsQueryError } =
-      await mightFail(db.select().from(citizenshipsTable));
-    if (citizenshipsQueryError)
-      throw new HTTPException(500, {
-        message: "Error fetching citizenships",
-        cause: citizenshipsQueryError,
-      });
-    return c.json({ citizenships: citizenshipsQueryResult });
-  })
   .get("/:profileNumber", async (c) => {
     const { profileNumber: profileNumberString } = c.req.param();
     const profileNumber = assertIsParsableInt(profileNumberString);

@@ -11,7 +11,9 @@ type CreateCitizenshipArgs = ArgumentTypes<
 >[0]["json"];
 
 type SerializeCitizenship = ExtractData<
-  Awaited<ReturnType<typeof client.api.v0.citizenships.$get>>
+  Awaited<
+    ReturnType<(typeof client.api.v0.citizenships)[":profileNumber"]["$get"]>
+  >
 >["citizenships"][number];
 
 export function mapSerializedCitizenshipToSchema(
@@ -77,7 +79,7 @@ async function getCitizenshipsByProfileNumber(profileNumber: number) {
   return citizenships.map(mapSerializedCitizenshipToSchema);
 }
 
-export const getCitizenshipsByprofileNumberQueryOptions = (
+export const getCitizenshipsByProfileNumberQueryOptions = (
   profileNumber: number,
 ) =>
   queryOptions({

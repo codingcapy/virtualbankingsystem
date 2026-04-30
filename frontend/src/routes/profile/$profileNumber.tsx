@@ -2,11 +2,10 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import z from "zod";
 import { getprofileByNumberQueryOptions } from "../../lib/api/profiles";
 import {
-  getCitizenshipsByprofileNumberQueryOptions,
+  getCitizenshipsByProfileNumberQueryOptions,
   useCreateCitizenshipMutation,
 } from "../../lib/api/citizenships";
 import { useQuery } from "@tanstack/react-query";
-import type React from "react";
 import { countries, countryMap } from "../../lib/utils";
 import { useEffect, useRef, useState } from "react";
 
@@ -43,7 +42,7 @@ function RouteComponent() {
     isLoading: citizenshipsLoading,
     error: citizenshipsError,
   } = useQuery(
-    getCitizenshipsByprofileNumberQueryOptions(profile.profileNumber),
+    getCitizenshipsByProfileNumberQueryOptions(profile.profileNumber),
   );
   const {
     mutate: createCitizenship,
@@ -164,26 +163,43 @@ function RouteComponent() {
         </div>
       </div>
       <div className="flex mt-2 font-semibold">
-        <div className="w-[500px] mr-5 overflow-x-auto">Address</div>
-        <div className="w-[500px] overflow-x-auto">Identification</div>
-      </div>
-      <div className="flex mt-2 font-semibold">
-        <div className="w-[500px] mr-5 overflow-auto h-[60px] border rounded"></div>
-        <div className="w-[500px] overflow-auto h-[60px] border rounded"></div>
+        <div>
+          <div className="flex pb-2">
+            <div className="mr-2">Address</div>
+            <div className="rounded-full border px-2 bg-gray-200">+ add</div>
+          </div>
+          <div className="w-[500px] mr-5 overflow-auto h-[60px] border rounded"></div>
+        </div>
+        <div>
+          <div className="flex pb-2">
+            <div className="mr-2">Identification</div>
+            <div className="rounded-full border px-2 bg-gray-200">+ add</div>
+          </div>
+          <div className="w-[500px] overflow-auto h-[60px] border rounded"></div>
+        </div>
       </div>
       <div className="flex">
         <div className="pt-5 pr-5 pb-5">
-          <div>Accounts</div>
+          <div className="flex pb-2">
+            <div className="mr-2">Accounts</div>
+            <div className="rounded-full border px-2 bg-gray-200">+ add</div>
+          </div>
           <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
         </div>
         <div className="pt-5 pr-5 pb-5">
-          <div>Investments</div>
+          <div className="flex pb-2">
+            <div className="mr-2">Investments</div>
+            <div className="rounded-full border px-2 bg-gray-200">+ add</div>
+          </div>
           <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
         </div>
       </div>
       <div className="flex">
         <div className="pr-5 pb-5">
-          <div>Loans</div>
+          <div className="flex pb-2">
+            <div className="mr-2">Loans</div>
+            <div className="rounded-full border px-2 bg-gray-200">+ add</div>
+          </div>
           <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
         </div>
       </div>
