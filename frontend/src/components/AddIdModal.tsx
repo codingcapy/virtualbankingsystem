@@ -2,6 +2,8 @@ import { useState, type SetStateAction } from "react";
 import { PiCaretDownBold } from "react-icons/pi";
 import { countries, countryMap } from "../lib/utils";
 import { DatePickerField } from "./DatePickerField";
+import { useCreateIdentificationMutation } from "../lib/api/identifications";
+import { format } from "date-fns";
 
 export type IdType =
   | "drivers_license"
@@ -20,8 +22,32 @@ export function AddIdModal(props: {
   const [countryValue, setCountryValue] = useState("Select");
   const [issueDate, setIssueDate] = useState<Date>(new Date());
   const [expiryDate, setExpiryDate] = useState<Date>(new Date());
+  const {
+    mutate: createId,
+    isPending: createIdPending,
+    error: createIdError,
+  } = useCreateIdentificationMutation();
+  const [notification, setNotification] = useState("");
 
-  function handleSubmit() {}
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (createIdPending) return;
+    const idNumber = (e.target as HTMLFormElement).idNumber.value.toString();
+    createId(
+      {
+        profileNumber: props.profileNumber,
+        type: idType,
+        number: idNumber,
+        country: countryValue,
+        issueDate: format(issueDate, "yyyy-MM-dd"),
+        expiryDate: format(expiryDate, "yyyy-MM-dd"),
+      },
+      {
+        onSuccess: (data) => props.setAddIdMode(false),
+        onError: (e) => setNotification(`Error creating address: ${e}`),
+      },
+    );
+  }
 
   return (
     <div
@@ -133,11 +159,14 @@ export function AddIdModal(props: {
           label="Issue date"
           value={issueDate}
           onChange={setIssueDate}
+          toDate={new Date()}
         />
         <DatePickerField
           label="Expiry date"
           value={expiryDate}
           onChange={setExpiryDate}
+          fromDate={new Date()}
+          endYear={new Date().getFullYear() + 20}
         />
         <div className="my-5 flex justify-end">
           <button className="p-2 mr-1 bg-sky-500 rounded text-white bold secondary-font font-bold cursor-pointer">

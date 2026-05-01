@@ -11,7 +11,7 @@ export function AddAddressModal(props: {
   profileNumber: number;
 }) {
   const {
-    mutate: createaAddress,
+    mutate: createAddress,
     isPending: createAddressPending,
     error: createAddressError,
   } = useCreateAddressMutation();
@@ -32,7 +32,7 @@ export function AddAddressModal(props: {
     const region = (e.target as HTMLFormElement).region.value;
     const country = countryValue;
     const postalCode = (e.target as HTMLFormElement).postalCode.value;
-    createaAddress(
+    createAddress(
       {
         profileNumber: props.profileNumber,
         type: addressType,

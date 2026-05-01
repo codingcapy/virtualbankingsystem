@@ -1,16 +1,26 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { format } from "date-fns";
 import "react-day-picker/dist/style.css";
 import { DayPicker, type MonthChangeEventHandler } from "react-day-picker";
-import { MONTHS, YEARS } from "../lib/utils";
+import { MONTHS, START_YEAR } from "../lib/utils";
 
 export function DatePickerField(props: {
   label: string;
   value: Date;
   onChange: (date: Date) => void;
+  fromDate?: Date;
+  toDate?: Date;
+  endYear?: number;
 }) {
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarMonth, setCalendarMonth] = useState<Date>(props.value);
+  const years = useMemo(() => {
+    const end = props.endYear ?? new Date().getFullYear();
+    return Array.from(
+      { length: end - START_YEAR + 1 },
+      (_, i) => START_YEAR + i,
+    );
+  }, [props.endYear]);
 
   function handleMonthDropdown(e: React.ChangeEvent<HTMLSelectElement>) {
     const newMonth = new Date(calendarMonth);
@@ -53,7 +63,7 @@ export function DatePickerField(props: {
                 onChange={handleYearDropdown}
                 className="rounded px-1 py-0.5 cursor-pointer"
               >
-                {YEARS.map((year) => (
+                {years.map((year) => (
                   <option key={year} value={year}>
                     {year}
                   </option>
@@ -69,6 +79,10 @@ export function DatePickerField(props: {
                 props.onChange(date || new Date());
                 setShowCalendar(false);
               }}
+              disabled={[
+                ...(props.fromDate ? [{ before: props.fromDate }] : []),
+                ...(props.toDate ? [{ after: props.toDate }] : []),
+              ]}
               classNames={{ caption: "hidden" }}
             />
           </div>
