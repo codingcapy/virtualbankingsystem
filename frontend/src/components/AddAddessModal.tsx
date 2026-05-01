@@ -20,8 +20,6 @@ export function AddAddressModal(props: {
   const [addressType, setAddressType] = useState<AddressType>("home");
   const [showTypes, setShowTypes] = useState(false);
   const [showCountries, setShowCountries] = useState(false);
-  const countriesRef = useRef<HTMLDivElement | null>(null);
-  const [addAddressMode, setAddAddressMode] = useState(false);
   const [countryValue, setCountryValue] = useState("Select");
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {

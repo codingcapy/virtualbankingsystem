@@ -10,6 +10,7 @@ import { countries, countryMap } from "../../lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { AddAddressModal } from "../../components/AddAddessModal";
 import { getAddressesByProfileNumberQueryOptions } from "../../lib/api/addresses";
+import { AddIdModal } from "../../components/AddIdModal";
 
 export const Route = createFileRoute("/profile/$profileNumber")({
   beforeLoad: async ({ context, params }) => {
@@ -59,6 +60,7 @@ function ProfilePage() {
   const [showCountries, setShowCountries] = useState(false);
   const countriesRef = useRef<HTMLDivElement | null>(null);
   const [addAddressMode, setAddAddressMode] = useState(false);
+  const [addIdMode, setAddIdMode] = useState(false);
 
   function handleSubmitCreateCitizenship(selected: string) {
     if (createCitizenshipPending) return;
@@ -217,11 +219,15 @@ function ProfilePage() {
         <div>
           <div className="flex pb-2">
             <div className="mr-2">Identification</div>
-            <div className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300">
+            <div
+              onClick={() => setAddIdMode(true)}
+              className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300"
+            >
               + add
             </div>
           </div>
           <div className="w-[500px] overflow-auto h-[60px] border rounded"></div>
+          {addIdMode && <AddIdModal />}
         </div>
       </div>
       <div className="flex">
@@ -255,7 +261,7 @@ function ProfilePage() {
           <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
         </div>
       </div>
-      {addAddressMode && (
+      {(addAddressMode || addIdMode) && (
         <div className="fixed inset-0 bg-black opacity-50 z-100"></div>
       )}
     </div>
