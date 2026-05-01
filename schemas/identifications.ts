@@ -5,6 +5,7 @@ import {
   date,
   index,
   unique,
+  integer,
 } from "drizzle-orm/pg-core";
 import type { InferSelectModel } from "drizzle-orm";
 import { profiles } from "./profiles";
@@ -13,7 +14,7 @@ export const identifications = pgTable(
   "identifications",
   {
     identificationId: varchar("identification_id").primaryKey(),
-    profileId: varchar("profile_id")
+    profileNumber: integer("profile_number")
       .notNull()
       .references(() => profiles.profileId),
     type: varchar("type", {
@@ -27,12 +28,12 @@ export const identifications = pgTable(
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => ({
-    profileIdx: index("identifications_profile_id_idx").on(table.profileId),
+    profileIdx: index("identifications_profile_id_idx").on(table.profileNumber),
     uniqueIdentification: unique(
       "identifications_type_number_country_unique",
     ).on(table.type, table.number, table.country),
     profileTypeIdx: index("identifications_profile_id_type_idx").on(
-      table.profileId,
+      table.profileNumber,
       table.type,
     ),
   }),

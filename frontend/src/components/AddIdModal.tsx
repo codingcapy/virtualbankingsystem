@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type SetStateAction } from "react";
 import { PiCaretDownBold } from "react-icons/pi";
 import { countries, countryMap } from "../lib/utils";
 import { DatePickerField } from "./DatePickerField";
@@ -10,7 +10,10 @@ export type IdType =
   | "citizen_card"
   | "other";
 
-export function AddIdModal() {
+export function AddIdModal(props: {
+  setAddIdMode: (value: SetStateAction<boolean>) => void;
+  profileNumber: number;
+}) {
   const [showTypes, setShowTypes] = useState(false);
   const [idType, setIdType] = useState<IdType>("drivers_license");
   const [showCountries, setShowCountries] = useState(false);
@@ -141,7 +144,7 @@ export function AddIdModal() {
             ADD
           </button>
           <div
-            // onClick={() => props.setAddAddressMode(false)}
+            onClick={() => props.setAddIdMode(false)}
             className="p-2 ml-1 bg-gray-300 rounded bold secondary-font font-bold cursor-pointer"
           >
             CANCEL

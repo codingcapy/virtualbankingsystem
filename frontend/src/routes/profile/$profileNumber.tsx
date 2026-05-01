@@ -227,7 +227,12 @@ function ProfilePage() {
             </div>
           </div>
           <div className="w-[500px] overflow-auto h-[60px] border rounded"></div>
-          {addIdMode && <AddIdModal />}
+          {addIdMode && (
+            <AddIdModal
+              setAddIdMode={setAddIdMode}
+              profileNumber={profile.profileNumber}
+            />
+          )}
         </div>
       </div>
       <div className="flex">
