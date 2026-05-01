@@ -129,7 +129,7 @@ function ProfilePage() {
                 ))}
                 <div
                   ref={countriesRef}
-                  onClick={() => setShowCountries(true)}
+                  onClick={() => setShowCountries(!showCountries)}
                   className="cursor-pointer hover:bg-[#d0d0d0] transition-all ease-in-out duration-300"
                 >
                   + add
@@ -193,9 +193,13 @@ function ProfilePage() {
               <div>Error</div>
             ) : addresses ? (
               <div>
-                {addresses.map((c) => (
-                  <div key={c.country} className="line-clamp-1 cursor-pointer">
-                    {countryMap[c.country] ?? c.country}
+                {addresses.map((a) => (
+                  <div
+                    key={a.addressId}
+                    className="line-clamp-1 cursor-pointer"
+                  >
+                    {a.line1}, {a.line2 && a.line2 + ", "} {a.city}, {a.region},{" "}
+                    {countryMap[a.country] ?? a.country}
                   </div>
                 ))}
               </div>
