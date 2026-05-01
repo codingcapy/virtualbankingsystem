@@ -8,6 +8,8 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { countries, countryMap } from "../../lib/utils";
 import { useEffect, useRef, useState } from "react";
+import { AddAddressModal } from "../../components/AddAddessModal";
+import { getAddressesByProfileNumberQueryOptions } from "../../lib/api/addresses";
 
 export const Route = createFileRoute("/profile/$profileNumber")({
   beforeLoad: async ({ context, params }) => {
@@ -32,10 +34,10 @@ export const Route = createFileRoute("/profile/$profileNumber")({
       throw redirect({ to: "/" });
     }
   },
-  component: RouteComponent,
+  component: ProfilePage,
 });
 
-function RouteComponent() {
+function ProfilePage() {
   const profile = Route.useRouteContext();
   const {
     data: citizenships,
@@ -49,8 +51,14 @@ function RouteComponent() {
     isPending: createCitizenshipPending,
     error: createCitizenshipError,
   } = useCreateCitizenshipMutation();
+  const {
+    data: addresses,
+    isLoading: addressesLoading,
+    error: addressesError,
+  } = useQuery(getAddressesByProfileNumberQueryOptions(profile.profileNumber));
   const [showCountries, setShowCountries] = useState(false);
   const countriesRef = useRef<HTMLDivElement | null>(null);
+  const [addAddressMode, setAddAddressMode] = useState(false);
 
   function handleSubmitCreateCitizenship(selected: string) {
     if (createCitizenshipPending) return;
@@ -87,7 +95,12 @@ function RouteComponent() {
         <div className="w-[125px] overflow-x-auto">Date of birth</div>
         <div className="w-[150px] mr-[25px] overflow-x-auto">Email</div>
         <div className="w-[100px] overflow-x-auto">Phone #</div>
-        <div className="w-[125px] overflow-x-auto">Citizenship</div>
+        <div className="flex">
+          <div className="overflow-x-auto mr-2">Citizenship</div>
+          <div className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300">
+            + add
+          </div>
+        </div>
       </div>
       <div className="flex mt-1">
         <div className="w-[100px] overflow-x-auto">
@@ -110,7 +123,7 @@ function RouteComponent() {
             citizenships.length > 0 ? (
               <div>
                 {citizenships.map((c) => (
-                  <div key={c.country}>
+                  <div key={c.country} className="line-clamp-1 cursor-pointer">
                     {countryMap[c.country] ?? c.country}
                   </div>
                 ))}
@@ -162,18 +175,47 @@ function RouteComponent() {
           )}
         </div>
       </div>
-      <div className="flex mt-2 font-semibold">
+      <div className="flex mt-2">
         <div>
           <div className="flex pb-2">
             <div className="mr-2">Address</div>
-            <div className="rounded-full border px-2 bg-gray-200">+ add</div>
+            <div
+              onClick={() => setAddAddressMode(true)}
+              className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300"
+            >
+              + add
+            </div>
           </div>
-          <div className="w-[500px] mr-5 overflow-auto h-[60px] border rounded"></div>
+          <div className="w-[500px] mr-5 overflow-auto h-[60px] border rounded">
+            {addressesLoading ? (
+              <div>Loading...</div>
+            ) : addressesError ? (
+              <div>Error</div>
+            ) : addresses ? (
+              <div>
+                {addresses.map((c) => (
+                  <div key={c.country} className="line-clamp-1 cursor-pointer">
+                    {countryMap[c.country] ?? c.country}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div></div>
+            )}
+          </div>
         </div>
+        {addAddressMode && (
+          <AddAddressModal
+            setAddAddressMode={setAddAddressMode}
+            profileNumber={profile.profileNumber}
+          />
+        )}
         <div>
           <div className="flex pb-2">
             <div className="mr-2">Identification</div>
-            <div className="rounded-full border px-2 bg-gray-200">+ add</div>
+            <div className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300">
+              + add
+            </div>
           </div>
           <div className="w-[500px] overflow-auto h-[60px] border rounded"></div>
         </div>
@@ -182,14 +224,18 @@ function RouteComponent() {
         <div className="pt-5 pr-5 pb-5">
           <div className="flex pb-2">
             <div className="mr-2">Accounts</div>
-            <div className="rounded-full border px-2 bg-gray-200">+ add</div>
+            <div className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300">
+              + add
+            </div>
           </div>
           <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
         </div>
         <div className="pt-5 pr-5 pb-5">
           <div className="flex pb-2">
             <div className="mr-2">Investments</div>
-            <div className="rounded-full border px-2 bg-gray-200">+ add</div>
+            <div className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300">
+              + add
+            </div>
           </div>
           <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
         </div>
@@ -198,11 +244,16 @@ function RouteComponent() {
         <div className="pr-5 pb-5">
           <div className="flex pb-2">
             <div className="mr-2">Loans</div>
-            <div className="rounded-full border px-2 bg-gray-200">+ add</div>
+            <div className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300">
+              + add
+            </div>
           </div>
           <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
         </div>
       </div>
+      {addAddressMode && (
+        <div className="fixed inset-0 bg-black opacity-50 z-100"></div>
+      )}
     </div>
   );
 }
