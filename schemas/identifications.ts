@@ -16,7 +16,7 @@ export const identifications = pgTable(
     identificationId: varchar("identification_id").primaryKey(),
     profileNumber: integer("profile_number")
       .notNull()
-      .references(() => profiles.profileId),
+      .references(() => profiles.profileNumber),
     type: varchar("type", {
       enum: ["drivers_license", "passport", "pr_card", "citizen_card", "other"],
     }).notNull(),

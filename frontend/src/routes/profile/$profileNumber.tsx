@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import { AddAddressModal } from "../../components/AddAddessModal";
 import { getAddressesByProfileNumberQueryOptions } from "../../lib/api/addresses";
 import { AddIdModal } from "../../components/AddIdModal";
+import { getIdentificationsByProfileNumberQueryOptions } from "../../lib/api/identifications";
 
 export const Route = createFileRoute("/profile/$profileNumber")({
   beforeLoad: async ({ context, params }) => {
@@ -61,6 +62,13 @@ function ProfilePage() {
   const countriesRef = useRef<HTMLDivElement | null>(null);
   const [addAddressMode, setAddAddressMode] = useState(false);
   const [addIdMode, setAddIdMode] = useState(false);
+  const {
+    data: identifications,
+    isLoading: identificationsLoading,
+    error: identificationsError,
+  } = useQuery(
+    getIdentificationsByProfileNumberQueryOptions(profile.profileNumber),
+  );
 
   function handleSubmitCreateCitizenship(selected: string) {
     if (createCitizenshipPending) return;
@@ -99,7 +107,7 @@ function ProfilePage() {
         <div className="w-[100px] overflow-x-auto">Phone #</div>
         <div className="flex">
           <div className="overflow-x-auto mr-2">Citizenship</div>
-          <div className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300">
+          <div className="cursor-pointer rounded-full border px-1 2xl:px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300 overflow-x-auto line-clamp-1">
             + add
           </div>
         </div>
@@ -226,7 +234,26 @@ function ProfilePage() {
               + add
             </div>
           </div>
-          <div className="w-[500px] overflow-auto h-[60px] border rounded"></div>
+          <div className="w-[500px] overflow-auto h-[60px] border rounded">
+            {identificationsLoading ? (
+              <div>Loading...</div>
+            ) : identificationsError ? (
+              <div>Error</div>
+            ) : identifications ? (
+              <div>
+                {identifications.map((i) => (
+                  <div
+                    key={i.identificationId}
+                    className="line-clamp-1 cursor-pointer"
+                  >
+                    {i.type} {i.number} {i.country} {i.issueDate} {i.expiryDate}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div></div>
+            )}
+          </div>
           {addIdMode && (
             <AddIdModal
               setAddIdMode={setAddIdMode}
