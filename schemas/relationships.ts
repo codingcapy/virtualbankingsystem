@@ -1,8 +1,9 @@
-import { pgTable, varchar, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, varchar, timestamp, serial } from "drizzle-orm/pg-core";
 import type { InferSelectModel } from "drizzle-orm";
 
 export const relationships = pgTable("relationships", {
   relationshipId: varchar("relationship_id").primaryKey(),
+  relationshipNumber: serial("relationship_number").unique().notNull(),
   status: varchar("status", { enum: ["active", "inactive", "suspended"] })
     .default("active")
     .notNull(),

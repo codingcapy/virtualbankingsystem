@@ -4,6 +4,8 @@ import {
   timestamp,
   index,
   unique,
+  serial,
+  integer,
 } from "drizzle-orm/pg-core";
 import type { InferSelectModel } from "drizzle-orm";
 import { relationships } from "./relationships";
@@ -12,10 +14,10 @@ export const accounts = pgTable(
   "accounts",
   {
     accountId: varchar("account_id").primaryKey(),
-    accountNumber: varchar("account_number", { length: 12 }).notNull(),
-    relationshipId: varchar("relationship_id")
+    accountNumber: serial("account_number").notNull().unique(),
+    relationshipNumber: integer("relationship_number")
       .notNull()
-      .references(() => relationships.relationshipId),
+      .references(() => relationships.relationshipNumber),
     type: varchar("type", {
       enum: ["chequing", "premium_chequing", "saving", "high_interest_saving"],
     }).notNull(),
@@ -27,15 +29,15 @@ export const accounts = pgTable(
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => ({
-    relationshipIdx: index("accounts_relationship_id_idx").on(
-      table.relationshipId,
+    relationshipIdx: index("accounts_relationship_number_idx").on(
+      table.relationshipNumber,
     ),
     statusIdx: index("accounts_status_idx").on(table.status),
     accountNumberUnique: unique("accounts_account_number_unique").on(
       table.accountNumber,
     ),
-    relationshipStatusIdx: index("accounts_relationship_id_status_idx").on(
-      table.relationshipId,
+    relationshipStatusIdx: index("accounts_relationship_number_status_idx").on(
+      table.relationshipNumber,
       table.status,
     ),
   }),
