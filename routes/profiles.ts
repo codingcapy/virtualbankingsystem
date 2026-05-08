@@ -3,6 +3,8 @@ import { createInsertSchema } from "drizzle-zod";
 import { Hono } from "hono";
 import z from "zod";
 import { profiles as profilesTable } from "../schemas/profiles";
+import { relationships as relationshipsTable } from "../schemas/relationships";
+import { relationshipProfiles as relationshipProfilesTable } from "../schemas/relationshipProfiles";
 import { mightFail } from "might-fail";
 import { db } from "../db";
 import { randomUUIDv7 } from "bun";
@@ -37,7 +39,34 @@ export const profilesRouter = new Hono()
           message: "Error while creating profile",
           cause: profileInsertError,
         });
-      return c.json({ profile: profileInsertResult[0] });
+      const newProfile = profileInsertResult[0];
+      if (!newProfile)
+        throw new HTTPException(500, {
+          message: "Profile creation returned no result",
+        });
+      const relationshipId = randomUUIDv7();
+      const { error: relationshipInsertError } = await mightFail(
+        db.insert(relationshipsTable).values({ relationshipId }),
+      );
+      if (relationshipInsertError)
+        throw new HTTPException(500, {
+          message: "Error while creating relationship for profile",
+          cause: relationshipInsertError,
+        });
+      const { error: relationshipProfileInsertError } = await mightFail(
+        db.insert(relationshipProfilesTable).values({
+          relationshipProfileId: randomUUIDv7(),
+          profileId: newProfile.profileId,
+          relationshipId,
+          role: "owner",
+        }),
+      );
+      if (relationshipProfileInsertError)
+        throw new HTTPException(500, {
+          message: "Error while linking profile to relationship",
+          cause: relationshipProfileInsertError,
+        });
+      return c.json({ profile: newProfile });
     },
   )
   .get("/", async (c) => {
