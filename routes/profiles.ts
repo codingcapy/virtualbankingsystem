@@ -27,45 +27,36 @@ export const profilesRouter = new Hono()
     ),
     async (c) => {
       const insertValues = c.req.valid("json");
-      const { result: profileInsertResult, error: profileInsertError } =
-        await mightFail(
-          db
+      const { result: newProfile, error: transactionError } = await mightFail(
+        db.transaction(async (tx) => {
+          const profileInsertResult = await tx
             .insert(profilesTable)
             .values({ profileId: randomUUIDv7(), ...insertValues })
-            .returning(),
-        );
-      if (profileInsertError)
-        throw new HTTPException(500, {
-          message: "Error while creating profile",
-          cause: profileInsertError,
-        });
-      const newProfile = profileInsertResult[0];
-      if (!newProfile)
-        throw new HTTPException(500, {
-          message: "Profile creation returned no result",
-        });
-      const relationshipId = randomUUIDv7();
-      const { error: relationshipInsertError } = await mightFail(
-        db.insert(relationshipsTable).values({ relationshipId }),
-      );
-      if (relationshipInsertError)
-        throw new HTTPException(500, {
-          message: "Error while creating relationship for profile",
-          cause: relationshipInsertError,
-        });
-      const { error: relationshipProfileInsertError } = await mightFail(
-        db.insert(relationshipProfilesTable).values({
-          relationshipProfileId: randomUUIDv7(),
-          profileId: newProfile.profileId,
-          relationshipId,
-          role: "owner",
+            .returning();
+          const insertedProfile = profileInsertResult[0];
+          if (!insertedProfile)
+            throw new Error("Profile creation returned no result");
+
+          const relationshipId = randomUUIDv7();
+          await tx.insert(relationshipsTable).values({ relationshipId });
+
+          await tx.insert(relationshipProfilesTable).values({
+            relationshipProfileId: randomUUIDv7(),
+            profileId: insertedProfile.profileId,
+            relationshipId,
+            role: "owner",
+          });
+
+          return insertedProfile;
         }),
       );
-      if (relationshipProfileInsertError)
+      if (transactionError) {
+        console.error("Error while creating profile:", transactionError);
         throw new HTTPException(500, {
-          message: "Error while linking profile to relationship",
-          cause: relationshipProfileInsertError,
+          message: "Error while creating profile",
+          cause: transactionError,
         });
+      }
       return c.json({ profile: newProfile });
     },
   )

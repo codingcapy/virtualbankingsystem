@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfileProfileNumberRouteImport } from './routes/profile/$profileNumber'
+import { Route as AddRelationshipRouteImport } from './routes/add/relationship'
 import { Route as AddProfileRouteImport } from './routes/add/profile'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const ProfileProfileNumberRoute = ProfileProfileNumberRouteImport.update({
   path: '/profile/$profileNumber',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AddRelationshipRoute = AddRelationshipRouteImport.update({
+  id: '/add/relationship',
+  path: '/add/relationship',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AddProfileRoute = AddProfileRouteImport.update({
   id: '/add/profile',
   path: '/add/profile',
@@ -32,30 +38,43 @@ const AddProfileRoute = AddProfileRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/add/profile': typeof AddProfileRoute
+  '/add/relationship': typeof AddRelationshipRoute
   '/profile/$profileNumber': typeof ProfileProfileNumberRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/add/profile': typeof AddProfileRoute
+  '/add/relationship': typeof AddRelationshipRoute
   '/profile/$profileNumber': typeof ProfileProfileNumberRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/add/profile': typeof AddProfileRoute
+  '/add/relationship': typeof AddRelationshipRoute
   '/profile/$profileNumber': typeof ProfileProfileNumberRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/add/profile' | '/profile/$profileNumber'
+  fullPaths:
+    | '/'
+    | '/add/profile'
+    | '/add/relationship'
+    | '/profile/$profileNumber'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/add/profile' | '/profile/$profileNumber'
-  id: '__root__' | '/' | '/add/profile' | '/profile/$profileNumber'
+  to: '/' | '/add/profile' | '/add/relationship' | '/profile/$profileNumber'
+  id:
+    | '__root__'
+    | '/'
+    | '/add/profile'
+    | '/add/relationship'
+    | '/profile/$profileNumber'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AddProfileRoute: typeof AddProfileRoute
+  AddRelationshipRoute: typeof AddRelationshipRoute
   ProfileProfileNumberRoute: typeof ProfileProfileNumberRoute
 }
 
@@ -75,6 +94,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileProfileNumberRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/add/relationship': {
+      id: '/add/relationship'
+      path: '/add/relationship'
+      fullPath: '/add/relationship'
+      preLoaderRoute: typeof AddRelationshipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/add/profile': {
       id: '/add/profile'
       path: '/add/profile'
@@ -88,6 +114,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AddProfileRoute: AddProfileRoute,
+  AddRelationshipRoute: AddRelationshipRoute,
   ProfileProfileNumberRoute: ProfileProfileNumberRoute,
 }
 export const routeTree = rootRouteImport

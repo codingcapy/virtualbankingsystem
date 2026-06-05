@@ -3,7 +3,6 @@ import {
   varchar,
   timestamp,
   index,
-  unique,
   serial,
   integer,
 } from "drizzle-orm/pg-core";
@@ -33,9 +32,6 @@ export const accounts = pgTable(
       table.relationshipNumber,
     ),
     statusIdx: index("accounts_status_idx").on(table.status),
-    accountNumberUnique: unique("accounts_account_number_unique").on(
-      table.accountNumber,
-    ),
     relationshipStatusIdx: index("accounts_relationship_number_status_idx").on(
       table.relationshipNumber,
       table.status,
