@@ -7,6 +7,7 @@ import { profilesRouter } from "./routes/profiles";
 import { citizenshipsRouter } from "./routes/citizenships";
 import { addressesRouter } from "./routes/addresses";
 import { identificationsRouter } from "./routes/identifications";
+import { relationshipsRouter } from "./routes/relationships";
 
 const app = new Hono();
 
@@ -20,7 +21,8 @@ const apiRoutes = app
   .route("/profiles", profilesRouter)
   .route("/citizenships", citizenshipsRouter)
   .route("/addresses", addressesRouter)
-  .route("/identifications", identificationsRouter);
+  .route("/identifications", identificationsRouter)
+  .route("/relationships", relationshipsRouter);
 
 export type ApiRoutes = typeof apiRoutes;
 export default app;
