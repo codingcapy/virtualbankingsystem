@@ -3,11 +3,12 @@ import { useCreateAddressMutation } from "../lib/api/addresses";
 import { useNavigate } from "@tanstack/react-router";
 import { PiCaretDownBold } from "react-icons/pi";
 import { countries, countryMap } from "../lib/utils";
+import type { AddMode } from "../routes/profile/$profileNumber";
 
 export type AddressType = "home" | "billing" | "mailing" | "other";
 
 export function AddAddressModal(props: {
-  setAddAddressMode: (value: SetStateAction<boolean>) => void;
+  setAddMode: React.Dispatch<React.SetStateAction<AddMode>>;
   profileNumber: number;
 }) {
   const {
@@ -44,7 +45,7 @@ export function AddAddressModal(props: {
         postalCode,
       },
       {
-        onSuccess: (data) => props.setAddAddressMode(false),
+        onSuccess: (data) => props.setAddMode("none"),
         onError: (e) => setNotification(`Error creating address: ${e}`),
       },
     );
@@ -181,7 +182,7 @@ export function AddAddressModal(props: {
             ADD
           </button>
           <div
-            onClick={() => props.setAddAddressMode(false)}
+            onClick={() => props.setAddMode("none")}
             className="p-2 ml-1 bg-gray-300 rounded bold secondary-font font-bold cursor-pointer"
           >
             CANCEL

@@ -30,7 +30,6 @@ const createRelationshipSchema = z.object({
 export const relationshipsRouter = new Hono()
   .post("/", zValidator("json", createRelationshipSchema), async (c) => {
     const { profiles } = c.req.valid("json");
-
     const { result: newRelationship, error: transactionError } =
       await mightFail(
         db.transaction(async (tx) => {
@@ -84,8 +83,8 @@ export const relationshipsRouter = new Hono()
 
     return c.json({ relationship: newRelationship }, 201);
   })
-  .get("/:relationshipNumber", async (c) => {
-    const { relationshipNumber } = c.req.param();
+  .get("/:profileNumber", async (c) => {
+    const { profileNumber } = c.req.param();
     const { result: relationshipsQueryResult, error: relationshipsQueryError } =
       await mightFail(db.select().from(relationshipsTable));
     if (relationshipsQueryError)

@@ -4,6 +4,7 @@ import { countries, countryMap } from "../lib/utils";
 import { DatePickerField } from "./DatePickerField";
 import { useCreateIdentificationMutation } from "../lib/api/identifications";
 import { format } from "date-fns";
+import type { AddMode } from "../routes/profile/$profileNumber";
 
 export type IdType =
   | "drivers_license"
@@ -13,7 +14,7 @@ export type IdType =
   | "other";
 
 export function AddIdModal(props: {
-  setAddIdMode: (value: SetStateAction<boolean>) => void;
+  setAddMode: React.Dispatch<React.SetStateAction<AddMode>>;
   profileNumber: number;
 }) {
   const [showTypes, setShowTypes] = useState(false);
@@ -43,7 +44,7 @@ export function AddIdModal(props: {
         expiryDate: format(expiryDate, "yyyy-MM-dd"),
       },
       {
-        onSuccess: (data) => props.setAddIdMode(false),
+        onSuccess: (data) => props.setAddMode("none"),
         onError: (e) => setNotification(`Error creating address: ${e}`),
       },
     );
@@ -173,7 +174,7 @@ export function AddIdModal(props: {
             ADD
           </button>
           <div
-            onClick={() => props.setAddIdMode(false)}
+            onClick={() => props.setAddMode("none")}
             className="p-2 ml-1 bg-gray-300 rounded bold secondary-font font-bold cursor-pointer"
           >
             CANCEL

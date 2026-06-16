@@ -12,6 +12,9 @@ import { AddAddressModal } from "../../components/AddAddessModal";
 import { getAddressesByProfileNumberQueryOptions } from "../../lib/api/addresses";
 import { AddIdModal } from "../../components/AddIdModal";
 import { getIdentificationsByProfileNumberQueryOptions } from "../../lib/api/identifications";
+import { AddAccountModal } from "../../components/AddAccountModal";
+
+export type AddMode = "none" | "address" | "id" | "account";
 
 export const Route = createFileRoute("/profile/$profileNumber")({
   beforeLoad: async ({ context, params }) => {
@@ -60,8 +63,6 @@ function ProfilePage() {
   } = useQuery(getAddressesByProfileNumberQueryOptions(profile.profileNumber));
   const [showCountries, setShowCountries] = useState(false);
   const countriesRef = useRef<HTMLDivElement | null>(null);
-  const [addAddressMode, setAddAddressMode] = useState(false);
-  const [addIdMode, setAddIdMode] = useState(false);
   const {
     data: identifications,
     isLoading: identificationsLoading,
@@ -69,6 +70,7 @@ function ProfilePage() {
   } = useQuery(
     getIdentificationsByProfileNumberQueryOptions(profile.profileNumber),
   );
+  const [addMode, setAddMode] = useState<AddMode>("none");
 
   function handleSubmitCreateCitizenship(selected: string) {
     if (createCitizenshipPending) return;
@@ -190,7 +192,7 @@ function ProfilePage() {
           <div className="flex pb-2">
             <div className="mr-2">Address</div>
             <div
-              onClick={() => setAddAddressMode(true)}
+              onClick={() => setAddMode("address")}
               className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300"
             >
               + add
@@ -218,9 +220,9 @@ function ProfilePage() {
             )}
           </div>
         </div>
-        {addAddressMode && (
+        {addMode === "address" && (
           <AddAddressModal
-            setAddAddressMode={setAddAddressMode}
+            setAddMode={setAddMode}
             profileNumber={profile.profileNumber}
           />
         )}
@@ -228,7 +230,7 @@ function ProfilePage() {
           <div className="flex pb-2">
             <div className="mr-2">Identification</div>
             <div
-              onClick={() => setAddIdMode(true)}
+              onClick={() => setAddMode("id")}
               className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300"
             >
               + add
@@ -254,9 +256,9 @@ function ProfilePage() {
               <div></div>
             )}
           </div>
-          {addIdMode && (
+          {addMode === "id" && (
             <AddIdModal
-              setAddIdMode={setAddIdMode}
+              setAddMode={setAddMode}
               profileNumber={profile.profileNumber}
             />
           )}
@@ -266,7 +268,10 @@ function ProfilePage() {
         <div className="pt-5 pr-5 pb-5">
           <div className="flex pb-2">
             <div className="mr-2">Accounts</div>
-            <div className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300">
+            <div
+              onClick={() => setAddMode("account")}
+              className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300"
+            >
               + add
             </div>
           </div>
@@ -281,6 +286,12 @@ function ProfilePage() {
           </div>
           <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
         </div>
+        {addMode === "account" && (
+          <AddAccountModal
+            setAddMode={setAddMode}
+            profileNumber={profile.profileNumber}
+          />
+        )}
       </div>
       <div className="flex">
         <div className="pr-5 pb-5">
@@ -293,7 +304,7 @@ function ProfilePage() {
           <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
         </div>
       </div>
-      {(addAddressMode || addIdMode) && (
+      {addMode !== "none" && (
         <div className="fixed inset-0 bg-black opacity-50 z-100"></div>
       )}
     </div>

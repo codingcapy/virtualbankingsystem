@@ -34,3 +34,10 @@ export const countries = Object.entries(
 export const countryMap = Object.fromEntries(
   countries.map((c) => [c.value, c.label]),
 );
+
+// ensure account types are consistent with db schema enums
+export type AccountTypes =
+  | "chequing"
+  | "premium_chequing"
+  | "saving"
+  | "high_interest_saving";
