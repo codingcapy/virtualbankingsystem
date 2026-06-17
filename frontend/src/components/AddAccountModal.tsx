@@ -2,6 +2,8 @@ import { useState } from "react";
 import type { AddMode } from "../routes/profile/$profileNumber";
 import { PiCaretDownBold } from "react-icons/pi";
 import type { AccountTypes } from "../lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { getRelationshipsByProfileNumberQueryOptions } from "../lib/api/relationships";
 
 export function AddAccountModal(props: {
   setAddMode: React.Dispatch<React.SetStateAction<AddMode>>;
@@ -12,6 +14,13 @@ export function AddAccountModal(props: {
   const [showCurrencies, setShowCurrencies] = useState(false);
   const [selectedRelationship, setSelectedRelationship] = useState(null);
   const [selectedType, setSelectedType] = useState<AccountTypes>("chequing");
+  const {
+    data: relationships,
+    isLoading: relationshipsLoading,
+    error: relationshipsError,
+  } = useQuery(
+    getRelationshipsByProfileNumberQueryOptions(props.profileNumber),
+  );
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -33,7 +42,19 @@ export function AddAccountModal(props: {
             onClick={() => setShowRelationships(!showRelationships)}
             className="border rounded px-2 py-1 flex items-center justify-center cursor-pointer"
           >
-            <div className="mr-2 capitalize">12345678</div>
+            <div className="mr-2 capitalize">
+              {relationshipsLoading ? (
+                <div>Loading...</div>
+              ) : relationshipsError ? (
+                <div>Error</div>
+              ) : relationships?.length ? (
+                <div>
+                  {String(relationships[0].relationshipNumber).padStart(8, "0")}
+                </div>
+              ) : (
+                <div></div>
+              )}
+            </div>
             <PiCaretDownBold />
           </div>
         </div>

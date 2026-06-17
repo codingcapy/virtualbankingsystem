@@ -1,9 +1,30 @@
-import { client, type ArgumentTypes } from "./client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Relationship } from "@server/schemas/relationships";
+import { client, type ArgumentTypes, type ExtractData } from "./client";
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 type CreateRelationshipArgs = ArgumentTypes<
   typeof client.api.v0.relationships.$post
 >[0]["json"];
+
+type SerializeRelationship = ExtractData<
+  Awaited<
+    ReturnType<(typeof client.api.v0.relationships)[":profileNumber"]["$get"]>
+  >
+>["relationships"][number];
+
+export function mapSerializedRelationshipToSchema(
+  serialized: SerializeRelationship,
+): Relationship {
+  return {
+    ...serialized,
+    createdAt: new Date(serialized.createdAt),
+    updatedAt: new Date(serialized.updatedAt),
+  };
+}
 
 async function createRelationship(args: CreateRelationshipArgs) {
   const res = await client.api.v0.relationships.$post({ json: args });
@@ -43,3 +64,22 @@ export const useCreateRelationshipMutation = (
     },
   });
 };
+
+async function getRelationshipsByProfileNumber(profileNumber: number) {
+  const res = await client.api.v0.relationships[":profileNumber"].$get({
+    param: { profileNumber: profileNumber.toString() },
+  });
+  if (!res.ok) {
+    throw new Error("Error getting addresses by id");
+  }
+  const { relationships } = await res.json();
+  return relationships.map(mapSerializedRelationshipToSchema);
+}
+
+export const getRelationshipsByProfileNumberQueryOptions = (
+  profileNumber: number,
+) =>
+  queryOptions({
+    queryKey: ["addresses", profileNumber],
+    queryFn: () => getRelationshipsByProfileNumber(profileNumber),
+  });

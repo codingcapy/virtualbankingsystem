@@ -6,7 +6,7 @@ import { db } from "../db";
 import { relationships as relationshipsTable } from "../schemas/relationships";
 import { relationshipProfiles as relationshipProfilesTable } from "../schemas/relationshipProfiles";
 import { profiles as profilesTable } from "../schemas/profiles";
-import { inArray } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { randomUUIDv7 } from "bun";
 
@@ -86,7 +86,31 @@ export const relationshipsRouter = new Hono()
   .get("/:profileNumber", async (c) => {
     const { profileNumber } = c.req.param();
     const { result: relationshipsQueryResult, error: relationshipsQueryError } =
-      await mightFail(db.select().from(relationshipsTable));
+      await mightFail(
+        db
+          .select()
+          .from(relationshipsTable)
+          .where(
+            inArray(
+              relationshipsTable.relationshipId,
+              db
+                .select({
+                  relationshipId: relationshipProfilesTable.relationshipId,
+                })
+                .from(relationshipProfilesTable)
+                .innerJoin(
+                  profilesTable,
+                  eq(
+                    profilesTable.profileId,
+                    relationshipProfilesTable.profileId,
+                  ),
+                )
+                .where(
+                  eq(profilesTable.profileNumber, parseInt(profileNumber)),
+                ),
+            ),
+          ),
+      );
     if (relationshipsQueryError)
       throw new HTTPException(500, {
         message: "Error fetching relationships",
