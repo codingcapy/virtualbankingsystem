@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { AddMode } from "../routes/profile/$profileNumber";
 import { PiCaretDownBold } from "react-icons/pi";
 import type { AccountTypes } from "../lib/utils";
@@ -12,7 +12,9 @@ export function AddAccountModal(props: {
   const [showRelationships, setShowRelationships] = useState(false);
   const [showTypes, setShowTypes] = useState(false);
   const [showCurrencies, setShowCurrencies] = useState(false);
-  const [selectedRelationship, setSelectedRelationship] = useState(null);
+  const [selectedRelationship, setSelectedRelationship] = useState<
+    number | null
+  >(null);
   const [selectedType, setSelectedType] = useState<AccountTypes>("chequing");
   const {
     data: relationships,
@@ -25,6 +27,12 @@ export function AddAccountModal(props: {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
   }
+
+  useEffect(() => {
+    if (relationships && selectedRelationship === null) {
+      setSelectedRelationship(relationships[0].relationshipNumber);
+    }
+  }, [relationships, selectedRelationship]);
 
   return (
     <div
@@ -48,15 +56,36 @@ export function AddAccountModal(props: {
               ) : relationshipsError ? (
                 <div>Error</div>
               ) : relationships?.length ? (
-                <div>
-                  {String(relationships[0].relationshipNumber).padStart(8, "0")}
-                </div>
+                <div>{String(selectedRelationship).padStart(8, "0")}</div>
               ) : (
                 <div></div>
               )}
             </div>
             <PiCaretDownBold />
           </div>
+          {showRelationships && (
+            <div className="absolute top-1 right-23 bg-white border rounded text-left">
+              {relationshipsLoading ? (
+                <div>Loading...</div>
+              ) : relationshipsError ? (
+                <div>Error</div>
+              ) : relationships ? (
+                relationships.map((r) => (
+                  <div
+                    onClick={() => {
+                      setSelectedRelationship(r.relationshipNumber);
+                      setShowRelationships(false);
+                    }}
+                    className={`px-2 py-1 cursor-pointer ${selectedType === "high_interest_saving" && "bg-gray-300"}`}
+                  >
+                    {String(r.relationshipNumber).padStart(8, "0")}
+                  </div>
+                ))
+              ) : (
+                <div></div>
+              )}
+            </div>
+          )}
         </div>
         <div className="flex my-1">
           <label htmlFor="" className="mr-2 py-1">
