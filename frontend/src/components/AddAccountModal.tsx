@@ -4,18 +4,22 @@ import { PiCaretDownBold } from "react-icons/pi";
 import type { AccountTypes } from "../lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { getRelationshipsByProfileNumberQueryOptions } from "../lib/api/relationships";
+import { useCreateAccountMutation } from "../lib/api/accounts";
+import type { Relationship } from "@server/schemas/relationships";
+
+type MenuMode = "none" | "relationship" | "type" | "currency";
+type Currency = "CAD" | "USD";
 
 export function AddAccountModal(props: {
   setAddMode: React.Dispatch<React.SetStateAction<AddMode>>;
   profileNumber: number;
+  relationships: Relationship[];
 }) {
-  const [showRelationships, setShowRelationships] = useState(false);
-  const [showTypes, setShowTypes] = useState(false);
-  const [showCurrencies, setShowCurrencies] = useState(false);
-  const [selectedRelationship, setSelectedRelationship] = useState<
-    number | null
-  >(null);
+  const [selectedRelationship, setSelectedRelationship] = useState(
+    props.relationships[0].relationshipNumber,
+  );
   const [selectedType, setSelectedType] = useState<AccountTypes>("chequing");
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>("CAD");
   const {
     data: relationships,
     isLoading: relationshipsLoading,
@@ -23,13 +27,25 @@ export function AddAccountModal(props: {
   } = useQuery(
     getRelationshipsByProfileNumberQueryOptions(props.profileNumber),
   );
+  const [menuMode, setMenuMode] = useState<MenuMode>("none");
+  const { mutate: createAccount, isPending: createAccountPending } =
+    useCreateAccountMutation();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    createAccount({
+      relationshipNumber: selectedRelationship,
+      type: selectedType,
+      currency: selectedCurrency,
+    });
   }
 
   useEffect(() => {
-    if (relationships && selectedRelationship === null) {
+    if (
+      relationships &&
+      relationships.length &&
+      selectedRelationship === null
+    ) {
       setSelectedRelationship(relationships[0].relationshipNumber);
     }
   }, [relationships, selectedRelationship]);
@@ -47,7 +63,7 @@ export function AddAccountModal(props: {
             Relationship:
           </label>
           <div
-            onClick={() => setShowRelationships(!showRelationships)}
+            onClick={() => setMenuMode("relationship")}
             className="border rounded px-2 py-1 flex items-center justify-center cursor-pointer"
           >
             <div className="mr-2 capitalize">
@@ -63,7 +79,7 @@ export function AddAccountModal(props: {
             </div>
             <PiCaretDownBold />
           </div>
-          {showRelationships && (
+          {menuMode === "relationship" && (
             <div className="absolute top-1 right-23 bg-white border rounded text-left">
               {relationshipsLoading ? (
                 <div>Loading...</div>
@@ -74,7 +90,7 @@ export function AddAccountModal(props: {
                   <div
                     onClick={() => {
                       setSelectedRelationship(r.relationshipNumber);
-                      setShowRelationships(false);
+                      setMenuMode("none");
                     }}
                     className={`px-2 py-1 cursor-pointer ${selectedType === "high_interest_saving" && "bg-gray-300"}`}
                   >
@@ -92,18 +108,18 @@ export function AddAccountModal(props: {
             Type:
           </label>
           <div
-            onClick={() => setShowTypes(!showTypes)}
+            onClick={() => setMenuMode("type")}
             className="border rounded px-2 py-1 flex items-center justify-center cursor-pointer"
           >
             <div className="mr-2 capitalize">{selectedType}</div>
             <PiCaretDownBold />
           </div>
-          {showTypes && (
-            <div className="absolute top-10 left-11 bg-white border rounded text-left">
+          {menuMode === "type" && (
+            <div className="absolute top-11 right-18 bg-white border rounded text-left">
               <div
                 onClick={() => {
                   setSelectedType("chequing");
-                  setShowTypes(false);
+                  setMenuMode("none");
                 }}
                 className={`px-2 py-1 cursor-pointer ${selectedType === "chequing" && "bg-gray-300"}`}
               >
@@ -112,7 +128,7 @@ export function AddAccountModal(props: {
               <div
                 onClick={() => {
                   setSelectedType("premium_chequing");
-                  setShowTypes(false);
+                  setMenuMode("none");
                 }}
                 className={`px-2 py-1 cursor-pointer ${selectedType === "premium_chequing" && "bg-gray-300"}`}
               >
@@ -121,7 +137,7 @@ export function AddAccountModal(props: {
               <div
                 onClick={() => {
                   setSelectedType("saving");
-                  setShowTypes(false);
+                  setMenuMode("none");
                 }}
                 className={`px-2 py-1 cursor-pointer ${selectedType === "saving" && "bg-gray-300"}`}
               >
@@ -130,7 +146,7 @@ export function AddAccountModal(props: {
               <div
                 onClick={() => {
                   setSelectedType("high_interest_saving");
-                  setShowTypes(false);
+                  setMenuMode("none");
                 }}
                 className={`px-2 py-1 cursor-pointer ${selectedType === "high_interest_saving" && "bg-gray-300"}`}
               >
@@ -144,13 +160,35 @@ export function AddAccountModal(props: {
             Currency:
           </label>
           <div
-            onClick={() => setShowCurrencies(!showCurrencies)}
+            onClick={() => setMenuMode("currency")}
             className="border rounded px-2 py-1 flex items-center justify-center cursor-pointer"
           >
-            <div className="mr-2 capitalize">CAD</div>
+            <div className="mr-2 capitalize">{selectedCurrency}</div>
             <PiCaretDownBold />
           </div>
         </div>
+        {menuMode === "currency" && (
+          <div className="absolute bottom-13 left-40 bg-white border rounded text-left">
+            <div
+              onClick={() => {
+                setSelectedCurrency("CAD");
+                setMenuMode("none");
+              }}
+              className={`px-2 py-1 cursor-pointer ${selectedCurrency === "CAD" && "bg-gray-300"}`}
+            >
+              CAD
+            </div>
+            <div
+              onClick={() => {
+                setSelectedCurrency("USD");
+                setMenuMode("none");
+              }}
+              className={`px-2 py-1 cursor-pointer ${selectedCurrency === "USD" && "bg-gray-300"}`}
+            >
+              USD
+            </div>
+          </div>
+        )}
         <div className="my-5 flex justify-end">
           <button className="p-2 mr-1 bg-sky-500 rounded text-white bold secondary-font font-bold cursor-pointer">
             ADD

@@ -14,6 +14,7 @@ import { AddIdModal } from "../../components/AddIdModal";
 import { getIdentificationsByProfileNumberQueryOptions } from "../../lib/api/identifications";
 import { AddAccountModal } from "../../components/AddAccountModal";
 import { AddInvestmentModal } from "../../components/AddInvestmentModal";
+import { getRelationshipsByProfileNumberQueryOptions } from "../../lib/api/relationships";
 
 export type AddMode = "none" | "address" | "id" | "account" | "investment";
 
@@ -70,6 +71,13 @@ function ProfilePage() {
     error: identificationsError,
   } = useQuery(
     getIdentificationsByProfileNumberQueryOptions(profile.profileNumber),
+  );
+  const {
+    data: relationships,
+    isLoading: relationshipsLoading,
+    error: relationshipsError,
+  } = useQuery(
+    getRelationshipsByProfileNumberQueryOptions(profile.profileNumber),
   );
   const [addMode, setAddMode] = useState<AddMode>("none");
 
@@ -265,39 +273,49 @@ function ProfilePage() {
           )}
         </div>
       </div>
-      <div className="flex">
-        <div className="pt-5 pr-5 pb-5">
-          <div className="flex pb-2">
-            <div className="mr-2">Accounts</div>
-            <div
-              onClick={() => setAddMode("account")}
-              className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300"
-            >
-              + add
+
+      {relationshipsLoading ? (
+        <div>Loading...</div>
+      ) : relationshipsError ? (
+        <div>Error loading relationships</div>
+      ) : relationships ? (
+        <div className="flex">
+          <div className="pt-5 pr-5 pb-5">
+            <div className="flex pb-2">
+              <div className="mr-2">Accounts</div>
+              <div
+                onClick={() => setAddMode("account")}
+                className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300"
+              >
+                + add
+              </div>
             </div>
+            <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
           </div>
-          <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
-        </div>
-        {addMode === "account" && (
-          <AddAccountModal
-            setAddMode={setAddMode}
-            profileNumber={profile.profileNumber}
-          />
-        )}
-        <div className="pt-5 pr-5 pb-5">
-          <div className="flex pb-2">
-            <div className="mr-2">Investments</div>
-            <div
-              onClick={() => setAddMode("investment")}
-              className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300"
-            >
-              + add
+          {addMode === "account" && (
+            <AddAccountModal
+              setAddMode={setAddMode}
+              profileNumber={profile.profileNumber}
+              relationships={relationships}
+            />
+          )}
+          <div className="pt-5 pr-5 pb-5">
+            <div className="flex pb-2">
+              <div className="mr-2">Investments</div>
+              <div
+                onClick={() => setAddMode("investment")}
+                className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300"
+              >
+                + add
+              </div>
             </div>
+            <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
           </div>
-          <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
+          {addMode === "investment" && <AddInvestmentModal />}
         </div>
-        {addMode === "investment" && <AddInvestmentModal />}
-      </div>
+      ) : (
+        <div></div>
+      )}
       <div className="flex">
         <div className="pr-5 pb-5">
           <div className="flex pb-2">

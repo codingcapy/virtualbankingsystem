@@ -1,5 +1,6 @@
 import type { Account } from "@server/schemas/accounts";
 import { client, type ArgumentTypes, type ExtractData } from "./client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type CreateAccountArgs = ArgumentTypes<
   typeof client.api.v0.accounts.$post
@@ -41,6 +42,23 @@ async function createAccount(args: CreateAccountArgs) {
     throw new Error(errorMessage);
   }
   return res.json();
+}
+
+export function useCreateAccountMutation(onError?: (message: string) => void) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createAccount,
+    onSettled: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["accounts", data?.account.relationshipNumber],
+      });
+    },
+    onError: (error) => {
+      if (onError) {
+        onError(error.message);
+      }
+    },
+  });
 }
 
 async function getAccountsByProfileNumber() {}
