@@ -13,8 +13,9 @@ import { getAddressesByProfileNumberQueryOptions } from "../../lib/api/addresses
 import { AddIdModal } from "../../components/AddIdModal";
 import { getIdentificationsByProfileNumberQueryOptions } from "../../lib/api/identifications";
 import { AddAccountModal } from "../../components/AddAccountModal";
+import { AddInvestmentModal } from "../../components/AddInvestmentModal";
 
-export type AddMode = "none" | "address" | "id" | "account";
+export type AddMode = "none" | "address" | "id" | "account" | "investment";
 
 export const Route = createFileRoute("/profile/$profileNumber")({
   beforeLoad: async ({ context, params }) => {
@@ -277,21 +278,25 @@ function ProfilePage() {
           </div>
           <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
         </div>
-        <div className="pt-5 pr-5 pb-5">
-          <div className="flex pb-2">
-            <div className="mr-2">Investments</div>
-            <div className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300">
-              + add
-            </div>
-          </div>
-          <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
-        </div>
         {addMode === "account" && (
           <AddAccountModal
             setAddMode={setAddMode}
             profileNumber={profile.profileNumber}
           />
         )}
+        <div className="pt-5 pr-5 pb-5">
+          <div className="flex pb-2">
+            <div className="mr-2">Investments</div>
+            <div
+              onClick={() => setAddMode("investment")}
+              className="cursor-pointer rounded-full border px-2 bg-gray-200 hover:bg-gray-300 transition-all ease-in-out duration-300"
+            >
+              + add
+            </div>
+          </div>
+          <div className="border w-[500px] h-[300px] overflow-auto border rounded"></div>
+        </div>
+        {addMode === "investment" && <AddInvestmentModal />}
       </div>
       <div className="flex">
         <div className="pr-5 pb-5">
